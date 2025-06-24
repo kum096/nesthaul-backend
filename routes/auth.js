@@ -85,9 +85,18 @@ router.get('/verify-email', async (req, res) => {
   const { email, code } = req.query;
 
   try {
-    const user = await User.findOne({ email, verificationCode: code });
+    const user = await User.findOne({ email });
 
     if (!user) {
+      return res.status(400).send("Invalid or expired verification link.");
+    }
+
+    if (user.isVerified) {
+      // Already verified, just redirect
+      return res.redirect("https://nesthaul.netlify.app/login.html");
+    }
+
+    if (user.verificationCode !== code) {
       return res.status(400).send("Invalid or expired verification link.");
     }
 
@@ -95,7 +104,7 @@ router.get('/verify-email', async (req, res) => {
     user.verificationCode = undefined;
     await user.save();
 
-    res.redirect("https://nesthaul.netlify.app/login.html");
+    return res.redirect("https://nesthaul.netlify.app/login.html");
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error during verification.");
