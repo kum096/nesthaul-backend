@@ -95,7 +95,7 @@ router.get('/verify-email', async (req, res) => {
     user.verificationCode = undefined;
     await user.save();
 
-    res.redirect("/login.html");
+    res.redirect("https://nesthaul.netlify.app/login.html");
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error during verification.");

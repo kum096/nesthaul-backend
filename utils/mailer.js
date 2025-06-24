@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 
+// Set up email transporter
 const transporter = nodemailer.createTransport({
   service: 'gmail', // or your email service
   auth: {
@@ -8,8 +9,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// 🔧 Use BASE_URL from env or fallback to localhost
+const BASE_URL = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
+
+// 📧 Send verification email
 const sendVerificationEmail = (toEmail, verificationCode) => {
-  const verificationUrl = `http://localhost:${process.env.PORT || 5000}/api/verify-email?email=${toEmail}&code=${verificationCode}`;
+  const verificationUrl = `${BASE_URL}/api/verify-email?email=${toEmail}&code=${verificationCode}`;
 
   const mailOptions = {
     from: `"NestHaul" <${process.env.EMAIL_USER}>`,
